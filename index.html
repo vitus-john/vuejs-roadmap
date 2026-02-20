@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vue.js Roadmap — From Zero to Hero</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #42b883;
+    --green-dim: #2d7a5c;
+    --dark: #0d1117;
+    --darker: #080c10;
+    --card: #111820;
+    --card2: #151e28;
+    --border: #1e2d3d;
+    --text: #c9d1d9;
+    --muted: #6e8099;
+    --accent: #e6c87a;
+    --red: #f87171;
+    --blue: #60a5fa;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--darker);
+    color: var(--text);
+    font-family: 'Lora', Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(66,184,131,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(66,184,131,.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Glow blob */
+  .glow {
+    position: fixed;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(66,184,131,.08) 0%, transparent 70%);
+    border-radius: 50%;
+    top: -200px; left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 0;
+    animation: floatGlow 8s ease-in-out infinite;
+  }
+
+  @keyframes floatGlow {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(40px); }
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* HEADER */
+  header {
+    text-align: center;
+    padding: 80px 0 60px;
+  }
+
+  .vue-logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--green);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp .6s .1s forwards;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.4rem, 7vw, 4.2rem);
+    font-weight: 800;
+    line-height: 1.05;
+    color: #fff;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp .6s .2s forwards;
+  }
+
+  h1 span { color: var(--green); }
+
+  .subtitle {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: 500px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+    opacity: 0;
+    animation: fadeUp .6s .3s forwards;
+  }
+
+  .badge-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp .6s .4s forwards;
+  }
+
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid;
+    letter-spacing: 1px;
+  }
+
+  .badge.green { border-color: var(--green); color: var(--green); background: rgba(66,184,131,.08); }
+  .badge.gold { border-color: var(--accent); color: var(--accent); background: rgba(230,200,122,.08); }
+  .badge.blue { border-color: var(--blue); color: var(--blue); background: rgba(96,165,250,.08); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* PROGRESS BAR */
+  .progress-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 48px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .progress-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--accent));
+    border-radius: 99px;
+    width: 0%;
+    transition: width .5s ease;
+  }
+
+  .progress-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--green);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  /* SECTION */
+  .phase {
+    margin-bottom: 56px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity .5s, transform .5s;
+  }
+
+  .phase.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .phase-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  .phase-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .phase-pill {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+
+  .pill-beginner { background: rgba(66,184,131,.15); color: var(--green); }
+  .pill-intermediate { background: rgba(96,165,250,.15); color: var(--blue); }
+  .pill-advanced { background: rgba(248,113,113,.15); color: var(--red); }
+
+  /* CHECKLIST */
+  .checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .check-item:hover {
+    border-color: rgba(66,184,131,.3);
+    background: var(--card2);
+  }
+
+  .check-item.done {
+    border-color: rgba(66,184,131,.2);
+    background: rgba(66,184,131,.04);
+  }
+
+  .check-item.done .item-text {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-color: rgba(66,184,131,.4);
+  }
+
+  .checkbox {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .2s;
+    background: transparent;
+  }
+
+  .check-item.done .checkbox {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .checkbox svg {
+    opacity: 0;
+    transition: opacity .2s;
+  }
+
+  .check-item.done .checkbox svg { opacity: 1; }
+
+  .item-content { flex: 1; }
+
+  .item-text {
+    font-family: 'Lora', serif;
+    font-size: .95rem;
+    color: var(--text);
+    line-height: 1.5;
+    transition: color .2s;
+  }
+
+  .item-note {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .item-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(230,200,122,.1);
+    color: var(--accent);
+    border: 1px solid rgba(230,200,122,.2);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* RESOURCES */
+  .resources-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--green);
+    border-radius: 0 10px 10px 0;
+    padding: 16px 20px;
+    margin-top: 20px;
+  }
+
+  .resources-box h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .resources-box ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .resources-box li {
+    font-family: 'Lora', serif;
+    font-size: .88rem;
+    color: var(--muted);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .resources-box li::before {
+    content: '→';
+    color: var(--green);
+    flex-shrink: 0;
+    font-style: normal;
+  }
+
+  .resources-box a {
+    color: var(--blue);
+    text-decoration: none;
+    font-style: italic;
+  }
+
+  .resources-box a:hover { text-decoration: underline; }
+
+  /* DIVIDER */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 40px 0;
+  }
+
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .divider-icon {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    padding: 4px 12px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+  }
+
+  /* TIP BOX */
+  .tip-box {
+    background: rgba(230,200,122,.06);
+    border: 1px solid rgba(230,200,122,.2);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 48px;
+  }
+
+  .tip-box h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .tip-box p {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: .93rem;
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  footer span { color: var(--green); }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .phase-pill { display: none; }
+    .progress-section { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<div class="wrapper">
+
+  <header>
+    <div class="vue-logo">// vue.js learning path</div>
+    <h1>Master Vue.js<br><span>From Scratch</span></h1>
+    <p class="subtitle">A no-AI-dependency roadmap. Every concept, every step — understood by you, built by you.</p>
+    <div class="badge-row">
+      <span class="badge green">Beginner Friendly</span>
+      <span class="badge gold">Self-Paced</span>
+      <span class="badge blue">Production Ready</span>
+    </div>
+  </header>
+
+  <div class="progress-section">
+    <span class="progress-label">YOUR PROGRESS</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="progress-count" id="progressCount">0 / 0 done</span>
+  </div>
+
+  <div class="tip-box">
+    <h4>⚡ Golden Rule</h4>
+    <p>Read the official docs, then build something small with what you learned — before moving on. Don't just watch tutorials and nod. Every phase below should produce a mini project you wrote yourself.</p>
+  </div>
+
+  <!-- PHASE 1 -->
+  <div class="phase" data-phase>
+    <div class="phase-header">
+      <span class="phase-num">PHASE 01</span>
+      <h2 class="phase-title">Prerequisites — The Non-Negotiables</h2>
+      <span class="phase-pill pill-beginner">Beginner</span>
+    </div>
+    <div class="checklist">
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">HTML5 — semantic tags, forms, inputs, media elements</div>
+          <div class="item-note">You should be able to build a webpage structure from memory</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">CSS3 — Flexbox, Grid, transitions, responsive design</div>
+          <div class="item-note">Build a responsive card layout without looking anything up</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">JavaScript ES6+ — let/const, arrow functions, template literals</div>
+          <div class="item-note">Core syntax you'll use in every Vue file</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Array & Object methods — map, filter, reduce, spread, destructuring</div>
+          <div class="item-note">These will appear in your Vue components constantly</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Promises & async/await — fetch an API and handle errors</div>
+          <div class="item-note">Try fetching data from a public API like JSONPlaceholder</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">ES Modules — import and export between files</div>
+          <div class="item-note">Every .vue file uses this pattern</div>
+        </div>
+      </div>
+    </div>
+    <div class="resources-box">
+      <h4>📚 Free Resources</h4>
+      <ul>
+        <li><a href="https://javascript.info" target="_blank">javascript.info</a> — the best JS resource on the internet, period</li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">MDN Web Docs</a> — your reference bible for HTML, CSS, JS</li>
+        <li>Mini project: Build a vanilla JS Todo app before touching Vue</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><span class="divider-icon">// setup</span><div class="divider-line"></div></div>
+
+  <!-- PHASE 2 -->
+  <div class="phase" data-phase>
+    <div class="phase-header">
+      <span class="phase-num">PHASE 02</span>
+      <h2 class="phase-title">Environment Setup</h2>
+      <span class="phase-pill pill-beginner">Beginner</span>
+    </div>
+    <div class="checklist">
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Install Node.js (LTS version) and understand what npm is</div>
+          <div class="item-note">Run: node -v and npm -v to confirm installation</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Scaffold a project with Vite: npm create vue@latest</div>
+          <div class="item-note">Choose: No TypeScript (for now), Yes to Vue Router, Yes to Pinia</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Understand the project folder structure — src/, components/, assets/, main.js</div>
+          <div class="item-note">Open every file. Read every line. Don't skip this.</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Install VS Code extensions: Volar (Vue), ESLint, Prettier</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Install Vue DevTools browser extension</div>
+          <div class="item-note">This will save you hours of debugging later</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><span class="divider-icon">// vue basics</span><div class="divider-line"></div></div>
+
+  <!-- PHASE 3 -->
+  <div class="phase" data-phase>
+    <div class="phase-header">
+      <span class="phase-num">PHASE 03</span>
+      <h2 class="phase-title">Vue Fundamentals</h2>
+      <span class="phase-pill pill-beginner">Beginner</span>
+    </div>
+    <div class="checklist">
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Understand the .vue Single File Component (SFC) structure: &lt;template&gt;, &lt;script setup&gt;, &lt;style&gt;</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Template syntax — {{ }} interpolation, and how Vue renders dynamic data</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">ref() and reactive() — declaring reactive state</div>
+          <div class="item-note">The heart of Vue's reactivity. Understand why .value is needed for ref</div>
+        </div>
+        <span class="item-tag">CORE</span>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Directives — v-if, v-else, v-show, v-for, v-bind (:), v-on (@), v-model</div>
+          <div class="item-note">Build a list with add/remove functionality using these</div>
+        </div>
+        <span class="item-tag">CORE</span>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">computed() — derived state that auto-updates</div>
+          <div class="item-note">Example: filtering a list, counting items</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">watch() and watchEffect() — reacting to data changes</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Event handling — @click, @input, @submit, event modifiers (.prevent, .stop)</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Dynamic class and style binding — :class="{}" and :style="{}"</div>
+        </div>
+      </div>
+    </div>
+    <div class="resources-box">
+      <h4>📌 Project after this phase</h4>
+      <ul>
+        <li>Build an interactive <strong>Note-Taking App</strong> — add, edit, delete notes with filtering</li>
+        <li>Use only what you learned in this phase. No routers, no stores yet.</li>
+        <li>Read: <a href="https://vuejs.org/guide/introduction" target="_blank">vuejs.org/guide</a> — the official docs are excellent</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><span class="divider-icon">// components</span><div class="divider-line"></div></div>
+
+  <!-- PHASE 4 -->
+  <div class="phase" data-phase>
+    <div class="phase-header">
+      <span class="phase-num">PHASE 04</span>
+      <h2 class="phase-title">Components & Communication</h2>
+      <span class="phase-pill pill-beginner">Beginner</span>
+    </div>
+    <div class="checklist">
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Creating and importing components — understanding SFC-based architecture</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Props — passing data from parent to child with defineProps()</div>
+          <div class="item-note">Understand prop types, defaults, and validation</div>
+        </div>
+        <span class="item-tag">CORE</span>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Emits — child to parent communication with defineEmits()</div>
+        </div>
+        <span class="item-tag">CORE</span>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Slots — default slots, named slots, scoped slots</div>
+          <div class="item-note">Build a reusable Card component with a named header slot</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Lifecycle hooks — onMounted, onUpdated, onUnmounted</div>
+          <div class="item-note">Know WHEN each hook runs and why it matters for API calls</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">provide / inject — passing data deep without prop drilling</div>
+        </div>
+      </div>
+    </div>
+    <div class="resources-box">
+      <h4>📌 Project after this phase</h4>
+      <ul>
+        <li>Rebuild your Note App with proper component architecture (NoteList, NoteCard, NoteForm)</li>
+        <li>Each component should have a clear, single responsibility</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><span class="divider-icon">// routing</span><div class="divider-line"></div></div>
+
+  <!-- PHASE 5 -->
+  <div class="phase" data-phase>
+    <div class="phase-header">
+      <span class="phase-num">PHASE 05</span>
+      <h2 class="phase-title">Vue Router</h2>
+      <span class="phase-pill pill-intermediate">Intermediate</span>
+    </div>
+    <div class="checklist">
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">What is client-side routing and why SPAs need it</div>
+          <div class="item-note">Understand the difference from traditional page navigation</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Defining routes — createRouter, createWebHistory, route objects</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">&lt;RouterView&gt; and &lt;RouterLink&gt; — the building blocks of navigation</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Dynamic route params — /user/:id, useRoute() to access params</div>
+        </div>
+        <span class="item-tag">CORE</span>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Programmatic navigation — useRouter().push(), replace(), go()</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Navigation guards — beforeEach for protecting routes (auth guards)</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Lazy loading routes — import() for code splitting</div>
+        </div>
+      </div>
+    </div>
+    <div class="resources-box">
+      <h4>📌 Project after this phase</h4>
+      <ul>
+        <li>Build a <strong>multi-page portfolio</strong>: Home, About, Projects, Contact pages</li>
+        <li>Add a 404 Not Found page with a wildcard route</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><span class="divider-icon">// state</span><div class="divider-line"></div></div>
+
+  <!-- PHASE 6 -->
+  <div class="phase" data-phase>
+    <div class="phase-header">
+      <span class="phase-num">PHASE 06</span>
+      <h2 class="phase-title">State Management with Pinia</h2>
+      <span class="phase-pill pill-intermediate">Intermediate</span>
+    </div>
+    <div class="checklist">
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Why global state? Understand the problem it solves first</div>
+          <div class="item-note">Feel the pain of prop drilling before reaching for Pinia</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Defining a store with defineStore() — state, getters, actions</div>
+        </div>
+        <span class="item-tag">CORE</span>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Using the store in components — useXxxStore() pattern</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">storeToRefs() — keeping reactivity when destructuring</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Persisting state to localStorage with pinia-plugin-persistedstate</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Async actions — fetching API data inside store actions</div>
+        </div>
+      </div>
+    </div>
+    <div class="resources-box">
+      <h4>📌 Project after this phase</h4>
+      <ul>
+        <li>Build a <strong>Shopping Cart app</strong>: browse products, add to cart, checkout summary</li>
+        <li>Cart state should persist on page refresh</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><span class="divider-icon">// api & data</span><div class="divider-line"></div></div>
+
+  <!-- PHASE 7 -->
+  <div class="phase" data-phase>
+    <div class="phase-header">
+      <span class="phase-num">PHASE 07</span>
+      <h2 class="phase-title">API Integration & Data Fetching</h2>
+      <span class="phase-pill pill-intermediate">Intermediate</span>
+    </div>
+    <div class="checklist">
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Fetching data with fetch() inside onMounted()</div>
+          <div class="item-note">This is where lifecycle hooks become real</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Installing and configuring Axios — interceptors, base URL setup</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Loading states, error states, and empty states — all three matter</div>
+          <div class="item-note">A good UI communicates every possible outcome</div>
+        </div>
+        <span class="item-tag">CORE</span>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Creating a reusable useFetch() composable</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Environment variables with .env files (VITE_API_URL=...)</div>
+        </div>
+      </div>
+    </div>
+    <div class="resources-box">
+      <h4>📌 Project after this phase</h4>
+      <ul>
+        <li>Build a <strong>Movie Browser</strong> using The Movie Database (TMDB) free API</li>
+        <li>Features: search, filter by genre, movie detail page via dynamic route</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><span class="divider-icon">// advanced</span><div class="divider-line"></div></div>
+
+  <!-- PHASE 8 -->
+  <div class="phase" data-phase>
+    <div class="phase-header">
+      <span class="phase-num">PHASE 08</span>
+      <h2 class="phase-title">Advanced Composition API</h2>
+      <span class="phase-pill pill-advanced">Advanced</span>
+    </div>
+    <div class="checklist">
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Composables — extracting reusable logic into useXxx() functions</div>
+          <div class="item-note">This is the most powerful Vue pattern. Build at least 3 custom composables.</div>
+        </div>
+        <span class="item-tag">MUST KNOW</span>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Async components and defineAsyncComponent()</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">&lt;Suspense&gt; — handling async component loading gracefully</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">&lt;Teleport&gt; — rendering components outside their DOM parent (modals, toasts)</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Custom directives — v-focus, v-click-outside, v-tooltip</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Performance — shallowRef, markRaw, v-memo, component keep-alive</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 9 -->
+  <div class="phase" data-phase>
+    <div class="phase-header">
+      <span class="phase-num">PHASE 09</span>
+      <h2 class="phase-title">Testing Your Components</h2>
+      <span class="phase-pill pill-advanced">Advanced</span>
+    </div>
+    <div class="checklist">
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Why test? Understand the value — don't skip this mindset</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Unit testing with Vitest — testing functions and composables</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Component testing with Vue Test Utils — mount, find, trigger</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">End-to-end testing with Playwright — simulate real user flows</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 10 -->
+  <div class="phase" data-phase>
+    <div class="phase-header">
+      <span class="phase-num">PHASE 10</span>
+      <h2 class="phase-title">Deploy & Go to Production</h2>
+      <span class="phase-pill pill-advanced">Advanced</span>
+    </div>
+    <div class="checklist">
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Build for production — npm run build, understand the dist/ output</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Deploy to Vercel or Netlify — connect GitHub repo, automatic deploys</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Handle SPA routing on deployment — configure rewrites to index.html</div>
+          <div class="item-note">Every Vue developer hits this. Learn it now.</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)">
+        <div class="checkbox"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="item-content">
+          <div class="item-text">Environment variables in production — never hardcode secrets</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><span class="divider-icon">// what's next</span><div class="divider-line"></div></div>
+
+  <div class="tip-box">
+    <h4>🚀 After All Phases</h4>
+    <p>You're now production-ready with Vue. The logical next steps are: TypeScript with Vue (add types to everything you've built), Nuxt.js for server-side rendering, VueUse (a massive collection of composables to study), and contributing to open source Vue projects. But don't rush there — master the fundamentals first. A developer who deeply understands the basics will always outperform one who skipped ahead.</p>
+  </div>
+
+  <footer>
+    Built for independent learners · <span>Read docs. Build things. Break them.</span> · Vue.js Roadmap 2025
+  </footer>
+
+</div>
+
+<script>
+  // Toggle checkboxes
+  function toggle(el) {
+    el.classList.toggle('done');
+    updateProgress();
+    saveProgress();
+  }
+
+  function updateProgress() {
+    const all = document.querySelectorAll('.check-item');
+    const done = document.querySelectorAll('.check-item.done');
+    const pct = all.length ? (done.length / all.length * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressCount').textContent = done.length + ' / ' + all.length + ' done';
+  }
+
+  function saveProgress() {
+    const states = [];
+    document.querySelectorAll('.check-item').forEach((el, i) => {
+      states[i] = el.classList.contains('done');
+    });
+    try { localStorage.setItem('vue_roadmap', JSON.stringify(states)); } catch(e) {}
+  }
+
+  function loadProgress() {
+    let states;
+    try { states = JSON.parse(localStorage.getItem('vue_roadmap') || '[]'); } catch(e) { states = []; }
+    document.querySelectorAll('.check-item').forEach((el, i) => {
+      if (states[i]) el.classList.add('done');
+    });
+    updateProgress();
+  }
+
+  // Scroll animation
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('[data-phase]').forEach(el => observer.observe(el));
+
+  loadProgress();
+</script>
+</body>
+</html>
